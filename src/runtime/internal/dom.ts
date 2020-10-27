@@ -1,15 +1,21 @@
 import { has_prop } from "./utils";
 
+function manipulateSafe(target: Node, node: Node, operation: any) {
+	if (!target || !node) return;
+
+	operation();
+}
+
 export function append(target: Node, node: Node) {
-	target.appendChild(node);
+	manipulateSafe(target, node, target.appendChild.bind(target, node));
 }
 
 export function insert(target: Node, node: Node, anchor?: Node) {
-	target.insertBefore(node, anchor || null);
+	manipulateSafe(target, node, target.insertBefore.bind(target, node, anchor || null));
 }
 
 export function detach(node: Node) {
-	node.parentNode.removeChild(node);
+	manipulateSafe(node.parentNode, node, node.parentNode.removeChild.bind(node.parentNode, node));
 }
 
 export function destroy_each(iterations, detaching) {

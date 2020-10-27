@@ -196,16 +196,22 @@ function loop(callback) {
 	};
 }
 
+function manipulateSafe(target, node, operation) {
+	if (!target || !node) return;
+
+	operation();
+}
+
 function append(target, node) {
-	target.appendChild(node);
+	manipulateSafe(target, node, target.appendChild.bind(target, node));
 }
 
 function insert(target, node, anchor) {
-	target.insertBefore(node, anchor || null);
+	manipulateSafe(target, node, target.insertBefore.bind(target, node, anchor || null));
 }
 
 function detach(node) {
-	node.parentNode.removeChild(node);
+	manipulateSafe(node.parentNode, node, node.parentNode.removeChild.bind(node.parentNode, node));
 }
 
 function destroy_each(iterations, detaching) {
